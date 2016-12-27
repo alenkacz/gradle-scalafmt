@@ -1,0 +1,89 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.5'
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.5"
+    }
+}
+
+plugins {
+    id 'net.researchgate.release' version '2.4.0'
+}
+
+group 'cz.alenkacz'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: "com.gradle.plugin-publish"
+
+repositories {
+    jcenter()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "3.2.1"
+}
+
+dependencies {
+    compile gradleApi()
+    compile 'org.codehaus.groovy:groovy-all:2.4.7'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile gradleTestKit()
+    testCompile ('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude group:'org.codehaus.groovy'
+    }
+
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    configurations = ['archives']
+    publish = true
+    pkg {
+        repo = 'maven'
+        name = 'gradle-scalafmt'
+        desc = 'Gradle plugin that can run scalafmt as a part of your build.'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/alenkacz/gradle-scalafmt.git'
+        websiteUrl = 'https://github.com/alenkacz/gradle-scalafmt'
+        issueTrackerUrl = 'https://github.com/alenkacz/gradle-scalafmt/issues'
+        labels = ['scala', 'scalafmt', 'formatting']
+        version {
+            name = project.version
+            vcsTag = project.version
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/alenkacz/gradle-scalafmt'
+    vcsUrl = 'https://github.com/alenkacz/gradle-scalafmt'
+    description = 'Gradle plugin that can run scalafmt as a part of your build.'
+    tags = ['scalafmt', 'scala', "formatting"]
+
+    plugins {
+        marathonPlugin {
+            id = 'cz.alenkacz.gradle.scalafmt'
+            displayName = 'Gradle Scalafmt plugin'
+        }
+    }
+}
