@@ -75,6 +75,8 @@ bintray {
     }
 }
 
+project.ext.set('gradle.publish.key', System.getenv('GRADLE_PORTAL_KEY'))
+project.ext.set('gradle.publish.secret', System.getenv('GRADLE_PORTAL_SECRET'))
 pluginBundle {
     website = 'https://github.com/alenkacz/gradle-scalafmt'
     vcsUrl = 'https://github.com/alenkacz/gradle-scalafmt'
