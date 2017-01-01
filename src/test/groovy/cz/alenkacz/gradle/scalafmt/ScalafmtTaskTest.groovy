@@ -26,6 +26,19 @@ class ScalafmtTaskTest extends Specification {
                      |""".stripMargin()
     }
 
+    def "finish successfully even for project without scala and java plugin applied"() {
+        given:
+        def testProject = prepareProject()
+        def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
+        project.plugins.apply 'scalafmt'
+
+        when:
+        project.tasks.scalafmt.format()
+
+        then:
+        noExceptionThrown()
+    }
+
     def prepareProject() {
         TestProject testProject = null
         File.createTempDir().with {
