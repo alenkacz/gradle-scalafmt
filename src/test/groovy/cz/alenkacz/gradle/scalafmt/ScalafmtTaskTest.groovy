@@ -3,13 +3,10 @@ package cz.alenkacz.gradle.scalafmt
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
-import java.nio.file.Files
-import java.nio.file.Paths
-
 class ScalafmtTaskTest extends Specification {
     def "format source code"() {
         given:
-        def testProject = prepareProject()
+        def testProject = ProjectMother.basicProject()
         def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
         project.plugins.apply 'scala'
         project.plugins.apply 'scalafmt'
@@ -19,7 +16,8 @@ class ScalafmtTaskTest extends Specification {
 
         then:
         def actual = testProject.testFile.text
-        actual == """object Test {
+        actual == """import java.nio.file.{Paths, Files}
+                     |object Test {
                      |  foo(a, // comment
                      |      b)
                      |}
@@ -28,7 +26,7 @@ class ScalafmtTaskTest extends Specification {
 
     def "finish successfully even for project without scala and java plugin applied"() {
         given:
-        def testProject = prepareProject()
+        def testProject = ProjectMother.basicProject()
         def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
         project.plugins.apply 'scalafmt'
 
@@ -39,19 +37,37 @@ class ScalafmtTaskTest extends Specification {
         noExceptionThrown()
     }
 
-    def prepareProject() {
-        TestProject testProject = null
-        File.createTempDir().with {
-            deleteOnExit()
-            def srcFolder = new File(absoluteFile, "src/main/scala/cz/alenkacz/gradle/scalafmt/test")
-            srcFolder.mkdirs()
-            def srcFile = Files.createFile(Paths.get(srcFolder.absolutePath, "Test.scala"))
-            srcFile.write """
-             |object Test { foo(a, // comment
-             |    b)}
-             """.stripMargin()
-            testProject = new TestProject(absoluteFile, srcFile.toFile())
-        }
-        return testProject
+    def "load configuration from project root and apply it to the source"() {
+        given:
+        def testProject = ProjectMother.projectWithConfig()
+        def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
+        project.plugins.apply 'scalafmt'
+        project.plugins.apply 'scala'
+
+        when:
+        project.tasks.scalafmt.format()
+
+        then:
+        def actual = testProject.testFile.text
+        actual == """import java.nio.file.{Files, Paths}
+                     |object Test {
+                     |  foo(a, // comment
+                     |      b)
+                     |}
+                     |""".stripMargin()
+    }
+
+    def "finish successfully even for project with badly formatted config"() {
+        given:
+        def testProject = ProjectMother.projectWithBadllyFormattedConfig()
+        def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
+        project.plugins.apply 'scalafmt'
+        project.plugins.apply 'scala'
+
+        when:
+        project.tasks.scalafmt.format()
+
+        then:
+        noExceptionThrown()
     }
 }
