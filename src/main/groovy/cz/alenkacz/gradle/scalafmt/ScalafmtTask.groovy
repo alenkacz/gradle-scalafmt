@@ -15,12 +15,16 @@ class ScalafmtTask extends DefaultTask {
         }
 
         project.sourceSets.all { sourceSet ->
-            sourceSet.allSource.filter { File f -> f.getAbsolutePath().endsWith(".scala") }.each { File f ->
+            sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->
                 String contents = f.text
                 logger.debug("Formatting '$f'")
                 def formattedContents = Scalafmt.format(contents, Scalafmt.format$default$2(), Scalafmt.format$default$3())
                 f.write(formattedContents.get())
             }
         }
+    }
+
+    def boolean canBeFormatted(File file) {
+        file.getAbsolutePath().endsWith(".scala") || file.getAbsolutePath().endsWith(".sbt")
     }
 }
