@@ -82,7 +82,7 @@ pluginBundle {
     tags = ['scalafmt', 'scala', "formatting"]
 
     plugins {
-        marathonPlugin {
+        scalafmtPlugin {
             id = 'cz.alenkacz.gradle.scalafmt'
             displayName = 'Gradle Scalafmt plugin'
         }
