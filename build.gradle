@@ -16,7 +16,7 @@ plugins {
 }
 
 group 'cz.alenkacz'
-version '1.0-SNAPSHOT'
+version = version == 'unspecified' ? 'DEVELOPER-SNAPSHOT' : version
 
 apply plugin: 'groovy'
 apply plugin: 'java'
