@@ -20,6 +20,10 @@ Usage
 
 	apply plugin: 'scalafmt'
 	
+	scalafmt {
+        // configFilePath = ".scalafmt.conf" // .scalafmt.conf in the project root is default value, provide only if other location is needed
+    }
+	
 Tasks
 ====================
 Tasks added to your project when applying this plugin:

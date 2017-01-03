@@ -77,7 +77,7 @@ class ScalafmtTaskTest extends Specification {
         def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
         project.plugins.apply 'scalafmt'
         project.plugins.apply 'scala'
-        def extension = (PluginExtension) project.extensions.findByName('settings')
+        def extension = (PluginExtension) project.extensions.findByName('scalafmt')
         extension.setConfigFilePath("./config/.scalafmt.conf")
 
         when:

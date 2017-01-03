@@ -7,6 +7,6 @@ class ScalafmtPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         ScalafmtTask scalafmtTask = project.task('scalafmt', type: ScalafmtTask)
-        PluginExtension extension = project.extensions.create('settings', PluginExtension)
+        PluginExtension extension = project.extensions.create('scalafmt', PluginExtension)
     }
 }
