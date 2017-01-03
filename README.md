@@ -29,3 +29,4 @@ Tasks
 Tasks added to your project when applying this plugin:
 
 - *scalafmt* - formats your scala and sbt source code based on the provided configuration
+- *scalafmtTest* - tests whether all files are correctly formatted, if not, the task fails

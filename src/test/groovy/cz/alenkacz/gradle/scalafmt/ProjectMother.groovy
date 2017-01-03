@@ -4,6 +4,24 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 class ProjectMother {
+    static def basicProjectWithCorrectlyFormattedFile() {
+        TestProject testProject = null
+        File.createTempDir().with {
+            deleteOnExit()
+            def srcFolder = new File(absoluteFile, sourceFilePath)
+            srcFolder.mkdirs()
+            def srcFile = Files.createFile(Paths.get(srcFolder.absolutePath, "Test.scala"))
+            srcFile.write """import java.nio.file.{Paths, Files}
+                     |object Test {
+                     |  foo(a, // comment
+                     |      b)
+                     |}
+                     |""".stripMargin()
+            testProject = new TestProject(absoluteFile, srcFile.toFile())
+        }
+        return testProject
+    }
+
     static def basicProject() {
         TestProject testProject = null
         File.createTempDir().with {

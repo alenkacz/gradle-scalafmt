@@ -2,9 +2,9 @@ package cz.alenkacz.gradle.scalafmt
 
 import org.gradle.api.tasks.TaskAction
 
-class ScalafmtTask extends ScalafmtFormatBase {
+class ScalafmtTestTask extends ScalafmtFormatBase {
     @TaskAction
     def format() {
-        runScalafmt()
+        runScalafmt(true)
     }
 }
