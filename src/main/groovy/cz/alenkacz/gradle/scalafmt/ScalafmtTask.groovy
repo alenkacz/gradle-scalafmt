@@ -18,7 +18,7 @@ class ScalafmtTask extends DefaultTask {
             sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->
                 String contents = f.text
                 logger.debug("Formatting '$f'")
-                def formattedContents = Scalafmt.format(contents, ConfigFactory.load(logger, project), Scalafmt.format$default$3())
+                def formattedContents = Scalafmt.format(contents, ConfigFactory.load(logger, project, project.scalafmt.configFilePath), Scalafmt.format$default$3())
                 f.write(formattedContents.get())
             }
         }

@@ -6,6 +6,7 @@ import org.gradle.api.Project
 class ScalafmtPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
-        project.task('scalafmt', type: ScalafmtTask)
+        ScalafmtTask scalafmtTask = project.task('scalafmt', type: ScalafmtTask)
+        PluginExtension extension = project.extensions.create('scalafmt', PluginExtension)
     }
 }

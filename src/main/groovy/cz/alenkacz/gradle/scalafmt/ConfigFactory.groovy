@@ -7,10 +7,10 @@ import org.scalafmt.config.ScalafmtConfig
 import org.scalafmt.config.ScalafmtConfig$
 
 class ConfigFactory {
-    static ScalafmtConfig load(Logger logger, Project project) {
-        def customConfig = project.file(".scalafmt.conf")
+    static ScalafmtConfig load(Logger logger, Project project, String configFilePath) {
+        def customConfig = project.file(configFilePath)
         if (!customConfig.exists()) {
-            logger.info("Custom config not found, using default scalafmt config")
+            logger.info("Custom config $configFilePath not found, using default scalafmt config")
             return ScalafmtConfig$.MODULE$.default
         }
         def parsedConfig = Config.fromHocon(customConfig.text, Config.fromHocon$default$2())
