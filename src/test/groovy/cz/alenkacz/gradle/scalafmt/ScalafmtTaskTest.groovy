@@ -70,4 +70,26 @@ class ScalafmtTaskTest extends Specification {
         then:
         noExceptionThrown()
     }
+
+    def "load configuration from a custom location and apply it to the source"() {
+        given:
+        def testProject = ProjectMother.projectWithCustomPathConfig()
+        def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
+        project.plugins.apply 'scalafmt'
+        project.plugins.apply 'scala'
+        def extension = (PluginExtension) project.extensions.findByName('settings')
+        extension.setConfigFilePath("./config/.scalafmt.conf")
+
+        when:
+        project.tasks.scalafmt.format()
+
+        then:
+        def actual = testProject.testFile.text
+        actual == """import java.nio.file.{Files, Paths}
+                     |object Test {
+                     |  foo(a, // comment
+                     |      b)
+                     |}
+                     |""".stripMargin()
+    }
 }

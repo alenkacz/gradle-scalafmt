@@ -52,4 +52,22 @@ class ProjectMother {
         }
         return testProject
     }
+
+    static def projectWithCustomPathConfig() {
+        TestProject testProject = null
+        File.createTempDir().with {
+            deleteOnExit()
+
+            def configFolder = new File(absoluteFile, "config")
+            configFolder.mkdirs()
+            def configFile = Files.createFile(Paths.get(configFolder.absolutePath, ".scalafmt.conf"))
+            configFile.write "rewrite.rules = [SortImports]"
+            def srcFolder = new File(absoluteFile, sourceFilePath)
+            srcFolder.mkdirs()
+            def srcFile = Files.createFile(Paths.get(srcFolder.absolutePath, "Test.scala"))
+            srcFile.write testSourceFile
+            testProject = new TestProject(absoluteFile, srcFile.toFile())
+        }
+        return testProject
+    }
 }
