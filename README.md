@@ -14,7 +14,7 @@ Usage
 			jcenter()
 		}
 		dependencies {
-			classpath 'cz.alenkacz.gradle:gradle-scalafmt:$putCurrentVersionHere'
+			classpath 'cz.alenkacz:gradle-scalafmt:$putCurrentVersionHere'
 		}
 	}
 
