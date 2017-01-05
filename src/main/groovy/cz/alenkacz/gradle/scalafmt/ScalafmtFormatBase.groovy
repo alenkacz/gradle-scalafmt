@@ -2,16 +2,27 @@ package cz.alenkacz.gradle.scalafmt
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.tasks.SourceSet
 import org.scalafmt.Scalafmt
 
 class ScalafmtFormatBase extends DefaultTask {
+    private Closure sourceSets = { closure ->
+        project.sourceSets.all(closure)
+    }
+
+    void setSourceSets(List<SourceSet> sourceSets) {
+        this.sourceSets = { closure ->
+            sourceSets.each(closure)
+        }
+    }
+
     def runScalafmt(boolean testOnly = false) {
         if (project.plugins.withType(JavaBasePlugin).empty) {
             logger.info("Java or Scala gradle plugin not available in this project, nothing to format")
             return
         }
         def misformattedFiles = new ArrayList<String>()
-        project.sourceSets.all { sourceSet ->
+        sourceSets { sourceSet ->
             sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->
                 String contents = f.text
                 logger.debug("Formatting '$f'")

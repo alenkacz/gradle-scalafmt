@@ -8,6 +8,13 @@ class ScalafmtPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.task('scalafmt', type: ScalafmtTask)
         project.task('scalafmtTest', type: ScalafmtTestTask)
-        project.extensions.create('scalafmt', PluginExtension)
+        PluginExtension extension = project.extensions.create('scalafmt', PluginExtension)
+        project.afterEvaluate {
+            if (extension.sourceSets != null) {
+                project.tasks.withType(ScalafmtFormatBase) {
+                    sourceSets = extension.sourceSets
+                }
+            }
+        }
     }
 }
