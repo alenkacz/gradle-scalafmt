@@ -22,6 +22,23 @@ class ProjectMother {
         return testProject
     }
 
+    static def basicProjectWithIncorrectTestFile() {
+        TestProject testProject = null
+        File.createTempDir().with {
+            deleteOnExit()
+            def srcFolder = new File(absoluteFile, testSourceFilePath)
+            srcFolder.mkdirs()
+            def srcFile = Files.createFile(Paths.get(srcFolder.absolutePath, "Test.scala"))
+            srcFile.write """
+                     |object Test {
+                     |  if(true){}
+                     |}
+                     |""".stripMargin()
+            testProject = new TestProject(absoluteFile, srcFile.toFile())
+        }
+        return testProject
+    }
+
     static def basicProject() {
         TestProject testProject = null
         File.createTempDir().with {
@@ -40,6 +57,7 @@ class ProjectMother {
                                            |    b)}
                                            """.stripMargin()
     private static def sourceFilePath = "src/main/scala/cz/alenkacz/gradle/scalafmt/test"
+    private static def testSourceFilePath = "src/test/scala/cz/alenkacz/gradle/scalafmt/test"
 
     static def projectWithConfig() {
         TestProject testProject = null
