@@ -31,4 +31,21 @@ class ScalafmtTestTaskTest extends Specification {
         then:
         noExceptionThrown()
     }
+
+    def "ignore source files in test"() {
+        given:
+        def testProject = ProjectMother.basicProjectWithIncorrectTestFile()
+        def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
+
+        project.plugins.apply 'scalafmt'
+        project.plugins.apply 'scala'
+        project.scalafmt.sourceSets = [project.sourceSets.main]
+
+        when:
+        project.evaluate()
+        project.tasks.scalafmtTest.format()
+
+        then:
+        noExceptionThrown()
+    }
 }

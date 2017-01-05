@@ -22,6 +22,7 @@ Usage
 	
 	scalafmt {
         // configFilePath = ".scalafmt.conf" // .scalafmt.conf in the project root is default value, provide only if other location is needed
+        // sourceSets = [project.sourceSets.main] // limit to main source set only
     }
 	
 Tasks
