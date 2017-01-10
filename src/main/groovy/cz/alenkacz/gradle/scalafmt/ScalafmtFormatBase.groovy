@@ -6,15 +6,9 @@ import org.gradle.api.tasks.SourceSet
 import org.scalafmt.Scalafmt
 
 class ScalafmtFormatBase extends DefaultTask {
-    private Closure sourceSets = { closure ->
-        project.sourceSets.all(closure)
-    }
+    SourceSet sourceSet
 
-    void setSourceSets(List<SourceSet> sourceSets) {
-        this.sourceSets = { closure ->
-            sourceSets.each(closure)
-        }
-    }
+    PluginExtension pluginExtension
 
     def runScalafmt(boolean testOnly = false) {
         if (project.plugins.withType(JavaBasePlugin).empty) {
@@ -22,18 +16,16 @@ class ScalafmtFormatBase extends DefaultTask {
             return
         }
         def misformattedFiles = new ArrayList<String>()
-        sourceSets { sourceSet ->
-            sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->
-                String contents = f.text
-                logger.debug("Formatting '$f'")
-                def formattedContents = Scalafmt.format(contents, ConfigFactory.load(logger, project, project.scalafmt.configFilePath), Scalafmt.format$default$3())
-                if (testOnly) {
-                    if (contents != formattedContents.get()) {
-                        misformattedFiles.add(f.absolutePath)
-                    }
-                } else {
-                    f.write(formattedContents.get())
+        sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->
+            String contents = f.text
+            logger.debug("Formatting '$f'")
+            def formattedContents = Scalafmt.format(contents, ConfigFactory.load(logger, project, pluginExtension.configFilePath), Scalafmt.format$default$3())
+            if (testOnly) {
+                if (contents != formattedContents.get()) {
+                    misformattedFiles.add(f.absolutePath)
                 }
+            } else {
+                f.write(formattedContents.get())
             }
         }
 

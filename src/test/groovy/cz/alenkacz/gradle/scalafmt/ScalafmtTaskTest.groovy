@@ -1,5 +1,6 @@
 package cz.alenkacz.gradle.scalafmt
 
+import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
@@ -25,16 +26,14 @@ class ScalafmtTaskTest extends Specification {
     }
 
     def "finish successfully even for project without scala and java plugin applied"() {
-        given:
+        when:
         def testProject = ProjectMother.basicProject()
         def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
         project.plugins.apply 'scalafmt'
 
-        when:
-        project.tasks.scalafmt.format()
-
         then:
-        noExceptionThrown()
+        project.tasks.checkScalafmtAll instanceof Task
+        project.tasks.scalafmtAll instanceof Task
     }
 
     def "load configuration from project root and apply it to the source"() {
