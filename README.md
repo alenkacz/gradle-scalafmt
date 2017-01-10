@@ -21,13 +21,17 @@ Usage
 	apply plugin: 'scalafmt'
 	
 	scalafmt {
-        // configFilePath = ".scalafmt.conf" // .scalafmt.conf in the project root is default value, provide only if other location is needed
-        // sourceSets = [project.sourceSets.main] // limit to main source set only
-    }
-	
+	    // configFilePath = ".scalafmt.conf" // .scalafmt.conf in the project root is default value, provide only if other location is needed
+	}
+
+
 Tasks
 ====================
 Tasks added to your project when applying this plugin:
 
 - *scalafmt* - formats your scala and sbt source code based on the provided configuration
-- *scalafmtTest* - tests whether all files are correctly formatted, if not, the task fails
+- *checkScalafmt* - checks whether all files are correctly formatted, if not, the task fails
+- *testScalafmt* - formats your test scala code based on the provided configuration
+- *checkTestScalafmt* - checks whether your test scala code is correctly formatted
+- *scalafmtAll* - formats scala code from all source sets
+- *checkScalafmtAll* - checks formatting of all source sets
