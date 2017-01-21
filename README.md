@@ -29,8 +29,8 @@ Tasks
 ====================
 Tasks added to your project when applying this plugin:
 
-- *scalafmt* - formats your scala and sbt source code based on the provided configuration
-- *checkScalafmt* - checks whether all files are correctly formatted, if not, the task fails
+- *scalafmt* - formats your scala and sbt source code (main sourceset only)
+- *checkScalafmt* - checks whether all files are correctly formatted, if not, the task fails  (main sourceset only)
 - *testScalafmt* - formats your test scala code based on the provided configuration
 - *checkTestScalafmt* - checks whether your test scala code is correctly formatted
 - *scalafmtAll* - formats scala code from all source sets
