@@ -52,6 +52,19 @@ class ProjectMother {
         return testProject
     }
 
+    static def playProject() {
+        TestProject testProject = null
+        File.createTempDir().with {
+            deleteOnExit()
+            def srcFolder = new File(absoluteFile, "app/models")
+            srcFolder.mkdirs()
+            def srcFile = Files.createFile(Paths.get(srcFolder.absolutePath, "Test.scala"))
+            srcFile.write testSourceFile
+            testProject = new TestProject(absoluteFile, srcFile.toFile())
+        }
+        return testProject
+    }
+
     private static def testSourceFile = """import java.nio.file.{Paths, Files}
                                            |object Test { foo(a, // comment
                                            |    b)}

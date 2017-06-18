@@ -3,6 +3,8 @@ package cz.alenkacz.gradle.scalafmt
 import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.SourceSet
+import org.gradle.play.PlayApplicationSpec
+import org.gradle.play.plugins.PlayPlugin
 import org.scalafmt.Scalafmt
 
 class ScalafmtFormatBase extends DefaultTask {
@@ -14,6 +16,13 @@ class ScalafmtFormatBase extends DefaultTask {
         if (project.plugins.withType(JavaBasePlugin).empty) {
             logger.info("Java or Scala gradle plugin not available in this project, nothing to format")
             return
+        }
+        if (project.plugins.hasPlugin(PlayPlugin)) {
+            def pc = project.components.withType(PlayApplicationSpec) { pas ->
+                def pc = pas as PlayApplicationSpec
+                println("aa")
+                // pc.getSources().each {s -> println(s.source.name) }
+            }
         }
         def misformattedFiles = new ArrayList<String>()
         sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->

@@ -25,6 +25,27 @@ class ScalafmtTaskTest extends Specification {
                      |""".stripMargin()
     }
 
+    def "format play source code"() {
+        given:
+        def testProject = ProjectMother.playProject()
+        def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
+        project.plugins.apply 'scala'
+        project.plugins.apply 'play'
+        project.plugins.apply 'scalafmt'
+
+        when:
+        project.tasks.scalafmt.format()
+
+        then:
+        def actual = testProject.testFile.text
+        actual == """import java.nio.file.{Paths, Files}
+                     |object Test {
+                     |  foo(a, // comment
+                     |      b)
+                     |}
+                     |""".stripMargin()
+    }
+
     def "finish successfully even for project without scala and java plugin applied"() {
         when:
         def testProject = ProjectMother.basicProject()
