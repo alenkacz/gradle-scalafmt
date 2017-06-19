@@ -13,10 +13,9 @@ class ConfigFactory {
             logger.info("Custom config $configFilePath not found, using default scalafmt config")
             return ScalafmtConfig$.MODULE$.default
         }
-        def parsedConfig = Config.fromHocon(customConfig.text, Config.fromHocon$default$2())
-        if (parsedConfig.right) {
-            parsedConfig.right().get()
-        } else {
+        def parsedConfig = Config.fromHoconString(customConfig.text, Config.fromHoconString$default$2())
+
+        parsedConfig.getOrElse {
             logger.warn("Unable to parse .scalafmt.conf in the project root. The format of the file is incorrect.")
             ScalafmtConfig$.MODULE$.default
         }
