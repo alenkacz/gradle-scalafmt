@@ -35,7 +35,7 @@ task wrapper(type: Wrapper) {
 dependencies {
     compile gradleApi()
     compile 'org.codehaus.groovy:groovy-all:2.4.7'
-    compile 'com.geirsson:scalafmt-core_2.12:1.1.0'
+    compile 'com.geirsson:scalafmt-core_2.12:1.2.0'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
     testCompile gradleTestKit()
