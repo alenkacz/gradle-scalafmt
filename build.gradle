@@ -29,7 +29,7 @@ repositories {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = "4.2"
+    gradleVersion = '4.4.1'
 }
 
 dependencies {
