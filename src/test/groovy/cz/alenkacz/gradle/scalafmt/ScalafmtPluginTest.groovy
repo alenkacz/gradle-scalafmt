@@ -19,5 +19,7 @@ class ScalafmtPluginTest extends Specification {
         project.tasks.checkTestScalafmt instanceof ScalafmtCheckTask
         project.tasks.scalafmtAll instanceof Task
         project.tasks.checkScalafmtAll instanceof Task
+        project.tasks.formatAndFailOnMisformattedFilesTestScalafmt instanceof ScalafmtFormatAndFailOnMisformattedFilesTask
+        project.tasks.scalafmtAllAndFailOnMisformattedFiles instanceof Task
     }
 }
