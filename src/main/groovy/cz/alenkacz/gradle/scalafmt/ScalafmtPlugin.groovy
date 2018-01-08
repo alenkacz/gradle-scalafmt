@@ -13,6 +13,8 @@ class ScalafmtPlugin implements Plugin<Project> {
         scalafmtAll.description = "Formats all source sets using scalafmt."
         Task checkScalafmtAll = project.tasks.create('checkScalafmtAll')
         checkScalafmtAll.description = "Checks formatting of all source sets using scalafmt."
+        Task scalafmtAllAndFailOnMisformattedFiles = project.tasks.create('scalafmtAllAndFailOnMisformattedFiles')
+        scalafmtAllAndFailOnMisformattedFiles.description = "Formats all source sets using scalafmt but fails if any misformatted files were found"
         PluginExtension extension = project.extensions.create('scalafmt', PluginExtension)
         project.plugins.withType(JavaBasePlugin) {
             def jpc = project.convention.getPlugin(JavaPluginConvention)
@@ -28,8 +30,15 @@ class ScalafmtPlugin implements Plugin<Project> {
                     t.pluginExtension = extension
                     t.description = "Checks formatting of ${sourceSet.name} source set using scalafmt."
                 }
+
+                def failOnMisformattedFilesTask = project.tasks.create(sourceSet.getTaskName("formatAndFailOnMisformattedFiles", "scalafmt"), ScalafmtFormatAndFailOnMisformattedFilesTask).configure { Task t ->
+                    t.sourceSet = sourceSet
+                    t.pluginExtension = extension
+                    t.description = "Formats ${sourceSet.name} source set using scalafmt and fails if any misformatted files were found."
+                }
                 scalafmtAll.dependsOn task
                 checkScalafmtAll.dependsOn checkTask
+                scalafmtAllAndFailOnMisformattedFiles.dependsOn failOnMisformattedFilesTask
             }
         }
     }

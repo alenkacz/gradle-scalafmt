@@ -10,7 +10,7 @@ class ScalafmtFormatBase extends DefaultTask {
 
     PluginExtension pluginExtension
 
-    def runScalafmt(boolean testOnly = false) {
+    def runScalafmt(boolean testOnly = false, boolean failOnMisformattedFiles = false) {
         if (project.plugins.withType(JavaBasePlugin).empty) {
             logger.info("Java or Scala gradle plugin not available in this project, nothing to format")
             return
@@ -24,12 +24,17 @@ class ScalafmtFormatBase extends DefaultTask {
                 if (contents != formattedContents.get()) {
                     misformattedFiles.add(f.absolutePath)
                 }
-            } else {
+            } else if (failOnMisformattedFiles) {
+                if (contents != formattedContents.get()) {
+                    misformattedFiles.add(f.absolutePath)
+                }
+                f.write(formattedContents.get())
+            }else {
                 f.write(formattedContents.get())
             }
         }
 
-        if (testOnly && !misformattedFiles.empty) {
+        if (!misformattedFiles.empty && (testOnly || failOnMisformattedFiles)) {
             throw new ScalafmtFormatException(misformattedFiles)
         }
     }
