@@ -9,16 +9,9 @@ You can use scalafmt plugin without any configuration. Then defaults from [scala
 Usage
 ====================
 
-	buildscript {
-		repositories {
-			jcenter()
-		}
-		dependencies {
-			classpath 'cz.alenkacz:gradle-scalafmt:$putCurrentVersionHere'
-		}
+	plugins {
+		id 'cz.alenkacz.gradle.scalafmt' version '$latestVersion'
 	}
-
-	apply plugin: 'scalafmt'
 	
 	scalafmt {
 	    // configFilePath = ".scalafmt.conf" // .scalafmt.conf in the project root is default value, provide only if other location is needed
