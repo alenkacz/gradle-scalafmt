@@ -19,8 +19,10 @@ class ConfigFactory {
         }
         def parsedConfig = Config.fromHoconString(customConfig.text, Config.fromHoconString$default$2())
 
-        parsedConfig.getOrElse {
-            logger.warn("Unable to parse .scalafmt.conf in the project root. The format of the file is incorrect.")
+        try {
+            parsedConfig.get()
+        } catch(Exception e) {
+            logger.warn("Unable to parse .scalafmt.conf in the project root. The format of the file is incorrect. Exception: $e")
             ScalafmtConfig$.MODULE$.default
         }
     }

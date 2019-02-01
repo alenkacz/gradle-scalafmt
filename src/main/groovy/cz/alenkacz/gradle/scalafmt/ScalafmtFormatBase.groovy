@@ -15,11 +15,12 @@ class ScalafmtFormatBase extends DefaultTask {
             logger.info("Java or Scala gradle plugin not available in this project, nothing to format")
             return
         }
+        def config = ConfigFactory.load(logger, project, pluginExtension.configFilePath)
         def misformattedFiles = new ArrayList<String>()
         sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->
             String contents = f.text
             logger.debug("Formatting '$f'")
-            def formattedContents = Scalafmt.format(contents, ConfigFactory.load(logger, project, pluginExtension.configFilePath), Scalafmt.format$default$3())
+            def formattedContents = Scalafmt.format(contents, config, Scalafmt.format$default$3())
             if (testOnly) {
                 if (contents != formattedContents.get()) {
                     misformattedFiles.add(f.absolutePath)
