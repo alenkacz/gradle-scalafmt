@@ -14,7 +14,10 @@ Usage
 	}
 	
 	scalafmt {
-	    // configFilePath = ".scalafmt.conf" // .scalafmt.conf in the project root is default value, provide only if other location is needed
+	    // .scalafmt.conf in the project root is default value, provide only if other location is needed
+	    // config file has to be relative path from current project or root project in case of multimodule projects
+	    // example usage: 
+	    // configFilePath = ".scalafmt.conf"
 	}
 
 

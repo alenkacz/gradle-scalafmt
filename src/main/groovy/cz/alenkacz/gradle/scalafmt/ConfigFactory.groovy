@@ -10,8 +10,12 @@ class ConfigFactory {
     static ScalafmtConfig load(Logger logger, Project project, String configFilePath) {
         def customConfig = project.file(configFilePath)
         if (!customConfig.exists()) {
-            logger.info("Custom config $configFilePath not found, using default scalafmt config")
-            return ScalafmtConfig$.MODULE$.default
+            // when config does not exist in the project folder, look also to a root of multimodule project
+            customConfig = project.rootProject.file(configFilePath)
+            if (!customConfig.exists()) {
+                logger.info("Custom config $configFilePath not found, using default scalafmt config")
+                return ScalafmtConfig$.MODULE$.default
+            }
         }
         def parsedConfig = Config.fromHoconString(customConfig.text, Config.fromHoconString$default$2())
 
