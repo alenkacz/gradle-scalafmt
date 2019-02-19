@@ -10,11 +10,11 @@ class ProjectMother {
             deleteOnExit()
             def srcFolder = new File(absoluteFile, sourceFilePath)
             srcFolder.mkdirs()
+            configFile(srcFolder.absolutePath)
             def srcFile = Files.createFile(Paths.get(srcFolder.absolutePath, "Test.scala"))
             srcFile.write """import java.nio.file.{Paths, Files}
                      |object Test {
-                     |  foo(a, // comment
-                     |      b)
+                     |  foo(a, b)
                      |}
                      |""".stripMargin()
             testProject = new TestProject(absoluteFile, srcFile.toFile())
@@ -28,12 +28,39 @@ class ProjectMother {
             deleteOnExit()
             def srcFolder = new File(absoluteFile, testSourceFilePath)
             srcFolder.mkdirs()
+            configFile(srcFolder.absolutePath)
             def srcFile = Files.createFile(Paths.get(srcFolder.absolutePath, "Test.scala"))
             srcFile.write """
                      |object Test {
-                     |  if(true){}
+                     |  if(
+                     |true)
+                     |{}
                      |}
                      |""".stripMargin()
+            testProject = new TestProject(absoluteFile, srcFile.toFile())
+        }
+        return testProject
+    }
+
+    static def configFile(String absolutePath) {
+        def configFile = Files.createFile(Paths.get(absolutePath, ".scalafmt.conf"))
+        configFile.write """
+                    |maxColumn = 80
+                    """.stripMargin()
+    }
+
+    static def IncorrectlyFormattedProject() {
+        TestProject testProject = null
+        File.createTempDir().with {
+            deleteOnExit()
+            def srcFolder = new File(absoluteFile, sourceFilePath)
+            srcFolder.mkdirs()
+            configFile(absoluteFile.toString())
+            def srcFile = Files.createFile(Paths.get(srcFolder.absolutePath, "Test.scala"))
+            srcFile.write """import java.nio.file.{Paths, Files}
+                                           |object Test { foo(a,  "src/test/scala/cz/alenkacz/gradle/scalafmt/test", "src/test/scala/cz/alenkacz/gradle/scalafmt/test", "src/test/scala/cz/alenkacz/gradle/scalafmt/test"
+                                           | b)}
+                                           """.stripMargin()
             testProject = new TestProject(absoluteFile, srcFile.toFile())
         }
         return testProject
@@ -45,6 +72,7 @@ class ProjectMother {
             deleteOnExit()
             def srcFolder = new File(absoluteFile, sourceFilePath)
             srcFolder.mkdirs()
+            configFile(absoluteFile.toString())
             def srcFile = Files.createFile(Paths.get(srcFolder.absolutePath, "Test.scala"))
             srcFile.write testSourceFile
             testProject = new TestProject(absoluteFile, srcFile.toFile())
