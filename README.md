@@ -6,6 +6,8 @@ This plugin will allow you to format your scala code as a part of your build pro
 
 You can use scalafmt plugin without any configuration. Then defaults from [scalafmt](http://scalameta.org/scalafmt/) will be used. You can adjust these settings by putting .scalafmt.conf to the root of your project. For the supported format and properties see the [scalafmt page](http://scalameta.org/scalafmt/)
 
+We are using scalafmt-dynamic which allows people to choose their scalafmt version inside scalafmt config. As a default, we're still sticking to the last [stable version](https://github.com/alenkacz/gradle-scalafmt/blob/master/src/main/groovy/cz/alenkacz/gradle/scalafmt/ScalafmtFormatBase.groovy#L16). E.g. to try out this plugin with non-stable 2.0.0-RC4 release, just put `version = "2.0.0-RC4"` into your scalafmt config. 
+
 Usage
 ====================
 
