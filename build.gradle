@@ -6,13 +6,13 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
-        classpath 'com.gradle.publish:plugin-publish-plugin:0.9.9'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.gradle.publish:plugin-publish-plugin:0.10.1'
     }
 }
 
 plugins {
-    id 'net.researchgate.release' version '2.6.0'
+    id 'net.researchgate.release' version '2.8.1'
 }
 
 group 'cz.alenkacz'
@@ -26,10 +26,6 @@ apply plugin: "com.gradle.plugin-publish"
 
 repositories {
     jcenter()
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.4.1'
 }
 
 dependencies {
