@@ -4,17 +4,17 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.SourceSet
 import org.scalafmt.interfaces.Scalafmt
-import org.scalafmt.interfaces.ScalafmtClassLoader
-import java.nio.file.Paths
+
+import java.util.stream.Collectors
 
 class ScalafmtFormatBase extends DefaultTask {
     SourceSet sourceSet
     ClassLoader cl = this.class.getClassLoader()
     PluginExtension pluginExtension
-    def formatter = Scalafmt.create(cl)
+
+    def globalFormatter = Scalafmt.create(cl)
             .withRespectVersion(false)
             .withDefaultVersion("1.5.1")
-
 
     def runScalafmt(boolean testOnly = false) {
         if (project.plugins.withType(JavaBasePlugin).empty) {
@@ -23,6 +23,9 @@ class ScalafmtFormatBase extends DefaultTask {
         }
         def configpath = ConfigFactory.get(logger,project,pluginExtension.configFilePath)
         def misformattedFiles = new ArrayList<String>()
+
+        def formatter = globalFormatter
+                .withMavenRepositories(repositories())
 
         sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->
             String contents = f.text
@@ -40,6 +43,12 @@ class ScalafmtFormatBase extends DefaultTask {
         if (testOnly && !misformattedFiles.empty) {
             throw new ScalafmtFormatException(misformattedFiles)
         }
+    }
+
+    private String[] repositories() {
+        project.getRepositories().stream().map { repository ->
+            repository.properties.get("url").toString()
+        }.collect(Collectors.toList()).toArray(new String[0])
     }
 
     def boolean canBeFormatted(File file) {
