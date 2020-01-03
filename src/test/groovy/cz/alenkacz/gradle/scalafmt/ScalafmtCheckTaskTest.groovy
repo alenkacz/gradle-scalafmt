@@ -1,7 +1,7 @@
 package cz.alenkacz.gradle.scalafmt
 
+import org.gradle.api.internal.artifacts.ivyservice.DefaultLenientConfiguration
 import org.gradle.testfixtures.ProjectBuilder
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.nio.file.Files
@@ -76,8 +76,7 @@ class ScalafmtCheckTaskTest extends Specification {
         noExceptionThrown()
     }
 
-    @Ignore
-    def "not fail Scala compilation with custom repository"() {
+    def "not fail on ArtifactResolveException with custom repository"() {
         given:
         def testProject = ProjectMother.basicProjectWithCorrectlyFormattedFile()
         def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
@@ -95,6 +94,7 @@ class ScalafmtCheckTaskTest extends Specification {
         project.tasks.compileScala.compile()
 
         then:
-        noExceptionThrown()
+        thrown IllegalStateException // because compileScala is not fully configured
+        // notThrown DefaultLenientConfiguration.ArtifactResolveException // Only one exception condition is allowed per 'then' block
     }
 }
