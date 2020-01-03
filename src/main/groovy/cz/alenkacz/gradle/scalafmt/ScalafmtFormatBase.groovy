@@ -50,7 +50,7 @@ class ScalafmtFormatBase extends DefaultTask {
         }.collect(Collectors.toList()).toArray(new String[0])
     }
 
-    def boolean canBeFormatted(File file) {
-        file.getAbsolutePath().endsWith(".scala") || file.getAbsolutePath().endsWith(".sbt")
+    boolean canBeFormatted(File file) {
+        !file.getAbsolutePath().startsWith(project.buildDir.absolutePath) && (file.getAbsolutePath().endsWith(".scala") || file.getAbsolutePath().endsWith(".sbt"))
     }
 }

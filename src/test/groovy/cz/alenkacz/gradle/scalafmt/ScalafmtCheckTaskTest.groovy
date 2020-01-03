@@ -1,7 +1,11 @@
 package cz.alenkacz.gradle.scalafmt
 
 import org.gradle.testfixtures.ProjectBuilder
+import spock.lang.Ignore
 import spock.lang.Specification
+
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class ScalafmtCheckTaskTest extends Specification {
     def "fail for badly formatted code"() {
@@ -10,6 +14,30 @@ class ScalafmtCheckTaskTest extends Specification {
         def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
         project.plugins.apply 'scala'
         project.plugins.apply 'scalafmt'
+
+        when:
+        project.tasks.checkScalafmt.format()
+
+        then:
+        thrown ScalafmtFormatException
+    }
+
+    def "not fail for badly formatted code in build directory"() {
+        given:
+        def testProject = ProjectMother.basicProject()
+        def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
+        project.plugins.apply 'scala'
+        project.plugins.apply 'scalafmt'
+        project.buildDir.mkdirs()
+        def srcFile = Files.createFile(Paths.get(project.buildDir.path, "Generated.scala"))
+        srcFile.write """
+                     |object Test {
+                     |  if(
+                     |true)
+                     |{}
+                     |}
+                     |""".stripMargin()
+        project.sourceSets.main.java.srcDir(project.buildDir.toPath())
 
         when:
         project.tasks.checkScalafmt.format()
@@ -48,6 +76,7 @@ class ScalafmtCheckTaskTest extends Specification {
         noExceptionThrown()
     }
 
+    @Ignore
     def "not fail Scala compilation with custom repository"() {
         given:
         def testProject = ProjectMother.basicProjectWithCorrectlyFormattedFile()
