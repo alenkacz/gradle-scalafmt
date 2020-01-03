@@ -47,4 +47,25 @@ class ScalafmtCheckTaskTest extends Specification {
         then:
         noExceptionThrown()
     }
+
+    def "not fail Scala compilation with custom repository"() {
+        given:
+        def testProject = ProjectMother.basicProjectWithCorrectlyFormattedFile()
+        def project = ProjectBuilder.builder().withProjectDir(testProject.projectRoot).build()
+        project.plugins.apply 'scala'
+        project.plugins.apply 'scalafmt'
+        project.repositories {
+            mavenCentral()
+        }
+        project.dependencies {
+            compile 'org.scala-lang:scala-library:2.12.10'
+        }
+
+        when:
+        project.tasks.checkScalafmt.format()
+        project.tasks.compileScala.compile()
+
+        then:
+        noExceptionThrown()
+    }
 }

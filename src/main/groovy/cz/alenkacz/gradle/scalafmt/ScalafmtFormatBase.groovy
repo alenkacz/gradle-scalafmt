@@ -24,8 +24,7 @@ class ScalafmtFormatBase extends DefaultTask {
         def configpath = ConfigFactory.get(logger,project,pluginExtension.configFilePath)
         def misformattedFiles = new ArrayList<String>()
 
-        def formatter = globalFormatter
-                .withMavenRepositories(repositories())
+        def formatter = globalFormatter.withMavenRepositories(repositories())
 
         sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->
             String contents = f.text
