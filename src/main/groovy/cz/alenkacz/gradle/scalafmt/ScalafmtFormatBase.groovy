@@ -2,6 +2,10 @@ package cz.alenkacz.gradle.scalafmt
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SourceSet
 import org.scalafmt.interfaces.Scalafmt
 
@@ -14,6 +18,17 @@ class ScalafmtFormatBase extends DefaultTask {
             .withRespectVersion(false)
             .withDefaultVersion("1.5.1")
 
+    @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
+    def getSourceSet() {
+        return sourceSet.allSource
+    }
+
+    @OutputFile
+    def getOutputFile() {
+        return new File(project.getBuildDir(), "scalaFmtResults.txt")
+    }
+
     def runScalafmt(boolean testOnly = false) {
         if (project.plugins.withType(JavaBasePlugin).empty) {
             logger.info("Java or Scala gradle plugin not available in this project, nothing to format")
@@ -24,7 +39,7 @@ class ScalafmtFormatBase extends DefaultTask {
 
         def formatter = globalFormatter.withMavenRepositories(*getRepositoriesUrls())
 
-        sourceSet.allSource.filter { File f -> canBeFormatted(f) }.each { File f ->
+        getSourceSet().filter { File f -> canBeFormatted(f) }.each { File f ->
             String contents = f.text
             logger.debug("Formatting '$f'")
             def formattedContents = formatter.format(configpath.toPath(), f.toPath(), contents)
@@ -38,7 +53,10 @@ class ScalafmtFormatBase extends DefaultTask {
         }
 
         if (testOnly && !misformattedFiles.empty) {
+            getOutputFile().write(misformattedFiles.join("\n"))
             throw new ScalafmtFormatException(misformattedFiles)
+        } else {
+            getOutputFile().write("OK")
         }
     }
 
