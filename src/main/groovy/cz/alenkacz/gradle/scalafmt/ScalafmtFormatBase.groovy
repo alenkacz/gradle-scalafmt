@@ -11,10 +11,10 @@ import org.scalafmt.interfaces.Scalafmt
 
 class ScalafmtFormatBase extends DefaultTask {
     SourceSet sourceSet
-    ClassLoader cl = this.class.getClassLoader()
+    static ClassLoader cl = ScalafmtFormatBase.class.getClassLoader()
     PluginExtension pluginExtension
 
-    def globalFormatter = Scalafmt.create(cl)
+    static def globalFormatter = Scalafmt.create(cl)
             .withRespectVersion(false)
             .withDefaultVersion("1.5.1")
 
