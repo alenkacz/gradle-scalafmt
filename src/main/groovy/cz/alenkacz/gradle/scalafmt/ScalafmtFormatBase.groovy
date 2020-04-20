@@ -34,12 +34,17 @@ class ScalafmtFormatBase extends DefaultTask {
             logger.info("Java or Scala gradle plugin not available in this project, nothing to format")
             return
         }
-        def configpath = ConfigFactory.get(logger,project,pluginExtension.configFilePath)
-        def misformattedFiles = new ArrayList<String>()
 
+        formatFiles(getSourceSet().getFiles(), testOnly)
+    }
+
+    def formatFiles(Set<File> files, testOnly = false) {
+        def configpath = ConfigFactory.get(logger,project,pluginExtension.configFilePath)
         def formatter = globalFormatter.withMavenRepositories(*getRepositoriesUrls())
 
-        getSourceSet().filter { File f -> canBeFormatted(f) }.each { File f ->
+        def misformattedFiles = new ArrayList<String>()
+
+        files.findAll { File f -> canBeFormatted(f) }.each { File f ->
             String contents = f.text
             logger.debug("Formatting '$f'")
             def formattedContents = formatter.format(configpath.toPath(), f.toPath(), contents)
@@ -50,13 +55,13 @@ class ScalafmtFormatBase extends DefaultTask {
             } else {
                 f.write(formattedContents)
             }
-        }
 
-        if (testOnly && !misformattedFiles.empty) {
-            getOutputFile().write(misformattedFiles.join("\n"))
-            throw new ScalafmtFormatException(misformattedFiles)
-        } else {
-            getOutputFile().write("OK")
+            if (testOnly && !misformattedFiles.empty) {
+                getOutputFile().write(misformattedFiles.join("\n"))
+                throw new ScalafmtFormatException(misformattedFiles)
+            } else {
+                getOutputFile().write("OK")
+            }
         }
     }
 
