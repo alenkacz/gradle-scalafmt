@@ -7,6 +7,7 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.SourceSet
+import org.scalafmt.dynamic.ScalafmtDynamicError
 import org.scalafmt.interfaces.Scalafmt
 
 class ScalafmtFormatBase extends DefaultTask {
@@ -16,7 +17,7 @@ class ScalafmtFormatBase extends DefaultTask {
 
     def globalFormatter = Scalafmt.create(cl)
             .withRespectVersion(false)
-            .withDefaultVersion("1.5.1")
+            .withDefaultVersion("2.7.5")
 
     @InputFiles
     @PathSensitive(PathSensitivity.RELATIVE)
@@ -42,13 +43,18 @@ class ScalafmtFormatBase extends DefaultTask {
         getSourceSet().filter { File f -> canBeFormatted(f) }.each { File f ->
             String contents = f.text
             logger.debug("Formatting '$f'")
-            def formattedContents = formatter.format(configpath.toPath(), f.toPath(), contents)
-            if (testOnly) {
-                if (contents != formattedContents) {
-                    misformattedFiles.add(f.absolutePath)
+            try {
+                def formattedContents = formatter.format(configpath.toPath(), f.toPath(), contents)
+                if (testOnly) {
+                    if (contents != formattedContents) {
+                        misformattedFiles.add(f.absolutePath)
+                    }
+                } else {
+                    f.write(formattedContents)
                 }
-            } else {
-                f.write(formattedContents)
+            }
+            catch (ScalafmtDynamicError err) {
+                logger.lifecycle("Error while formatting", err)
             }
         }
 
