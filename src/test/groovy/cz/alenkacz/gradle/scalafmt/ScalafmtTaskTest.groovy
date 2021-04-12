@@ -19,8 +19,10 @@ class ScalafmtTaskTest extends Specification {
         def actual = testProject.testFile.text
         actual == """import java.nio.file.{Paths, Files}
                      |object Test {
-                     |  foo(a, // comment
-                     |      b)
+                     |  foo(
+                     |    a, // comment
+                     |    b
+                     |  )
                      |}
                      |""".stripMargin()
     }
@@ -50,8 +52,10 @@ class ScalafmtTaskTest extends Specification {
         def actual = testProject.testFile.text
         actual == """import java.nio.file.{Files, Paths}
                      |object Test {
-                     |  foo(a, // comment
-                     |      b)
+                     |  foo(
+                     |    a, // comment
+                     |    b
+                     |  )
                      |}
                      |""".stripMargin()
     }
@@ -86,8 +90,10 @@ class ScalafmtTaskTest extends Specification {
         def actual = testProject.testFile.text
         actual == """import java.nio.file.{Files, Paths}
                      |object Test {
-                     |  foo(a, // comment
-                     |      b)
+                     |  foo(
+                     |    a, // comment
+                     |    b
+                     |  )
                      |}
                      |""".stripMargin()
     }

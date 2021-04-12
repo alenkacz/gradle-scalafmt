@@ -17,17 +17,17 @@ class ScalafmtPlugin implements Plugin<Project> {
         project.plugins.withType(JavaBasePlugin) {
             def jpc = project.convention.getPlugin(JavaPluginConvention)
             jpc.sourceSets.all { sourceSet ->
-                def task = project.tasks.create(sourceSet.getTaskName("", "scalafmt"), ScalafmtTask).configure { Task t ->
-                    t.sourceSet = sourceSet
-                    t.pluginExtension = extension
-                    t.description = "Formats ${sourceSet.name} source set using scalafmt."
-                }
+                def task = project.tasks.register(sourceSet.getTaskName("", "scalafmt"), ScalafmtTask, {
+                    it.sourceSet = sourceSet
+                    it.pluginExtension = extension
+                    it.description = "Formats ${sourceSet.name} source set using scalafmt."
+                })
 
-                def checkTask = project.tasks.create(sourceSet.getTaskName("check", "scalafmt"), ScalafmtCheckTask).configure { Task t ->
-                    t.sourceSet = sourceSet
-                    t.pluginExtension = extension
-                    t.description = "Checks formatting of ${sourceSet.name} source set using scalafmt."
-                }
+                def checkTask = project.tasks.register(sourceSet.getTaskName("check", "scalafmt"), ScalafmtCheckTask, {
+                    it.sourceSet = sourceSet
+                    it.pluginExtension = extension
+                    it.description = "Checks formatting of ${sourceSet.name} source set using scalafmt."
+                })
                 scalafmtAll.dependsOn task
                 checkScalafmtAll.dependsOn checkTask
             }
