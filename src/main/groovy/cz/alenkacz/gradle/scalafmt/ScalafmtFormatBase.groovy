@@ -3,6 +3,7 @@ package cz.alenkacz.gradle.scalafmt
 import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
@@ -12,10 +13,10 @@ import org.scalafmt.interfaces.Scalafmt
 
 class ScalafmtFormatBase extends DefaultTask {
     SourceSet sourceSet
-    ClassLoader cl = this.class.getClassLoader()
-    PluginExtension pluginExtension
+    private ClassLoader cl = this.class.getClassLoader()
+    @Internal PluginExtension pluginExtension
 
-    def globalFormatter = Scalafmt.create(cl)
+    private Scalafmt globalFormatter = Scalafmt.create(cl)
             .withRespectVersion(false)
             .withDefaultVersion("2.7.5")
 
