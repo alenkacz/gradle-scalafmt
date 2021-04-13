@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-        classpath 'com.gradle.publish:plugin-publish-plugin:0.10.1'
+        classpath 'com.gradle.publish:plugin-publish-plugin:0.14.0'
     }
 }
 
@@ -22,7 +22,7 @@ apply plugin: 'groovy'
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'com.jfrog.bintray'
-apply plugin: "com.gradle.plugin-publish"
+apply plugin: 'com.gradle.plugin-publish'
 
 repositories {
     jcenter()
