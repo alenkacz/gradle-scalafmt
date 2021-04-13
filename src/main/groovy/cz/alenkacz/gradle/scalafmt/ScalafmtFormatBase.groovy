@@ -13,10 +13,10 @@ import org.scalafmt.interfaces.Scalafmt
 
 class ScalafmtFormatBase extends DefaultTask {
     SourceSet sourceSet
-    private ClassLoader cl = this.class.getClassLoader()
+    static private ClassLoader cl = this.class.getClassLoader()
     @Internal PluginExtension pluginExtension
 
-    private Scalafmt globalFormatter = Scalafmt.create(cl)
+    static private Scalafmt globalFormatter = Scalafmt.create(cl)
             .withRespectVersion(false)
             .withDefaultVersion("2.7.5")
 
