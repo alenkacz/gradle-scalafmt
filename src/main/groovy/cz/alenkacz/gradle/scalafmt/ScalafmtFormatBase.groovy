@@ -21,8 +21,8 @@ class ScalafmtFormatBase extends DefaultTask {
 
     @InputFiles
     @PathSensitive(PathSensitivity.RELATIVE)
-    def getSourceSet() {
-        return sourceSet.allSource
+    def getSourceFiles() {
+        return sourceSet.allSource.filter { File f -> canBeFormatted(f) }
     }
 
     @OutputFile
@@ -40,7 +40,7 @@ class ScalafmtFormatBase extends DefaultTask {
 
         def formatter = globalFormatter.withMavenRepositories(*getRepositoriesUrls())
 
-        getSourceSet().filter { File f -> canBeFormatted(f) }.each { File f ->
+        getSourceFiles().each { File f ->
             String contents = f.text
             logger.debug("Formatting '$f'")
             try {
